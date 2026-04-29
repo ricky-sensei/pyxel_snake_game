@@ -5,8 +5,7 @@ screen_height = 160
 position_list = []
 for i in range(10):
     for j in range(10):
-        position_list.append((i, j))
-
+        position_list.append([i, j])  
 
 class App:
     def __init__(self):
@@ -21,9 +20,9 @@ class App:
         # １から１０までのグリッド
         self.snake_dx = 0
         self.snake_dy = 0
-        self.snake_position = [(self.snake_dx, self.snake_dy)]
+        self.snake_position = [[self.snake_dx, self.snake_dy]]  
         self.previous_snake = []
-        self.item_position = [(5, 5), (8, 6), (2, 7)]
+        self.item_position = [[5, 5], [8, 6], [2, 7]]  
 
     def update_snake(self):
         if self.head_direction == 90:
@@ -36,17 +35,15 @@ class App:
             self.snake_dy -= 1
 
         # 移動先がsnake_positionにあるか、もしくは画面外に行ったときはゲームオーバー
-        if (self.snake_dx, self.snake_dy) in self.snake_position or not 0 <=self.snake_dx <= 9 or not 0 <=self.snake_dy <= 9 :
+        if [self.snake_dx, self.snake_dy] in self.snake_position or not 0 <= self.snake_dx <= 9 or not 0 <= self.snake_dy <= 9:
             self.game_over = True
         self.previous_snake = self.snake_position
-        if (self.snake_dx, self.snake_dy) in self.item_position:
-            self.item_position.append(random.choice(list(set(position_list) - set(self.item_position) - set(self.snake_position))))
-            self.item_position.remove((self.snake_dx, self.snake_dy))
-            self.snake_position = [(self.snake_dx, self.snake_dy)] + self.snake_position
+        if [self.snake_dx, self.snake_dy] in self.item_position:
+            self.item_position.append(random.choice([pos for pos in position_list if pos not in self.item_position and pos not in self.snake_position]))
+            self.item_position.remove([self.snake_dx, self.snake_dy])
+            self.snake_position = [[self.snake_dx, self.snake_dy]] + self.snake_position
         else:
-            self.snake_position = [(self.snake_dx, self.snake_dy)] + self.snake_position[:-1]
-    
-            
+            self.snake_position = [[self.snake_dx, self.snake_dy]] + self.snake_position[:-1]
 
     def update(self):
         if self.game_over and pyxel.btnp(pyxel.KEY_SPACE):
@@ -64,7 +61,6 @@ class App:
                 self.head_direction = 0
             if pyxel.frame_count % 10 == 0:
                 self.update_snake()
-        
 
     def draw(self):
         pyxel.cls(0)
@@ -75,9 +71,10 @@ class App:
         else:
             pyxel.blt(self.snake_dx * 16, self.snake_dy * 16, 0, 0, 0, 16, 16, 0, rotate=self.head_direction)
             for body in self.snake_position[1:]:
-                pyxel.blt(body[0]*16, body[1]*16, 0, 16, 0, 16, 16, 0, )
+                pyxel.blt(body[0]*16, body[1]*16, 0, 16, 0, 16, 16, 0)
             for i in self.item_position:
                 pyxel.blt(i[0]*16, i[1]*16, 0, 32, 0, 16, 16, 0) 
+
     # グリッド線（あとで消す）
     def draw_grid(self):
         grid_size = 16
