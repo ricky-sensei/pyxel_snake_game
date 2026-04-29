@@ -71,7 +71,7 @@ class App:
             for body in self.snake_position[1:]:
                 pyxel.blt(body[0]*16, body[1]*16, 0, 16, 0, 16, 16, 0, )
             for i in self.item_position:
-                pyxel.blt(i[0]*16, i[1]*16, 0, 32, 0, 16, 16, 0) b
+                pyxel.blt(i[0]*16, i[1]*16, 0, 32, 0, 16, 16, 0) 
     # グリッド線（あとで消す）
     def draw_grid(self):
         grid_size = 16
