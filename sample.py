@@ -10,6 +10,12 @@ for i in range(10):
 
 class App:
     def __init__(self):
+        self.init_game()
+        pyxel.init(screen_width, screen_height)
+        pyxel.load("my_resource.pyxres")
+        pyxel.run(self.update, self.draw)
+
+    def init_game(self):
         self.game_over = False
         self.head_direction = 90
         # １から１０までのグリッド
@@ -18,11 +24,6 @@ class App:
         self.snake_position = [(self.snake_dx, self.snake_dy)]
         self.previous_snake = []
         self.item_position = [(5, 5), (8, 6), (2, 7)]
-        
-
-        pyxel.init(screen_width, screen_height)
-        pyxel.load("my_resource.pyxres")
-        pyxel.run(self.update, self.draw)
 
     def update_snake(self):
         if self.head_direction == 90:
@@ -48,17 +49,21 @@ class App:
             
 
     def update(self):
-        # 頭の向きを変更
-        if pyxel.btnp(pyxel.KEY_RIGHT):
-            self.head_direction = 90
-        elif pyxel.btnp(pyxel.KEY_DOWN):
-            self.head_direction = 180
-        elif pyxel.btnp(pyxel.KEY_LEFT):
-            self.head_direction = 270
-        elif pyxel.btnp(pyxel.KEY_UP):
-            self.head_direction = 0
-        if pyxel.frame_count % 10 == 0:
-            self.update_snake()
+        if self.game_over and pyxel.btnp(pyxel.KEY_SPACE):
+            self.init_game()
+            return
+        else:
+            # 頭の向きを変更
+            if pyxel.btnp(pyxel.KEY_RIGHT):
+                self.head_direction = 90
+            elif pyxel.btnp(pyxel.KEY_DOWN):
+                self.head_direction = 180
+            elif pyxel.btnp(pyxel.KEY_LEFT):
+                self.head_direction = 270
+            elif pyxel.btnp(pyxel.KEY_UP):
+                self.head_direction = 0
+            if pyxel.frame_count % 10 == 0:
+                self.update_snake()
         
 
     def draw(self):
@@ -66,6 +71,7 @@ class App:
         self.draw_grid()
         if self.game_over:
             pyxel.text(0, 0, "GAME OVER", 7)
+            pyxel.text(0, 10, "PRESS SPACE TO CONTINUE", 7)
         else:
             pyxel.blt(self.snake_dx * 16, self.snake_dy * 16, 0, 0, 0, 16, 16, 0, rotate=self.head_direction)
             for body in self.snake_position[1:]:
