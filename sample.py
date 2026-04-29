@@ -18,13 +18,13 @@ class App:
         self.snake_position = [(self.snake_dx, self.snake_dy)]
         self.previous_snake = []
         self.item_position = [(5, 5), (8, 6), (2, 7)]
-
+        
 
         pyxel.init(screen_width, screen_height)
         pyxel.load("my_resource.pyxres")
         pyxel.run(self.update, self.draw)
 
-    def updaet_snake(self):
+    def update_snake(self):
         if self.head_direction == 90:
             self.snake_dx += 1
         elif self.head_direction == 180:
@@ -34,7 +34,7 @@ class App:
         elif self.head_direction == 0:
             self.snake_dy -= 1
 
-        # 移動先がsnake_positionにあるか、もしくは画面買いに行ったときはゲームオーバー
+        # 移動先がsnake_positionにあるか、もしくは画面外に行ったときはゲームオーバー
         if (self.snake_dx, self.snake_dy) in self.snake_position or not 0 <=self.snake_dx <= 9 or not 0 <=self.snake_dy <= 9 :
             self.game_over = True
         self.previous_snake = self.snake_position
@@ -58,7 +58,7 @@ class App:
         elif pyxel.btnp(pyxel.KEY_UP):
             self.head_direction = 0
         if pyxel.frame_count % 10 == 0:
-            self.updaet_snake()
+            self.update_snake()
         
 
     def draw(self):
