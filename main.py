@@ -6,6 +6,7 @@ screen_hight = 160
 class App:
     def __init__(self):
         # 変数
+        self.game_over = False
         self.kakudo = 0
         self.head_x = 0
         self.head_y = 0
@@ -41,14 +42,23 @@ class App:
             if self. muki == "shita":
                 self.head_y += 1
             
+            if self.head_x >= 10 or self.head_x <= -1 or self.head_y >= 10 or self.head_y <= -1:
+                self.game_over = True
+            
+            # if self.game_over == True:
+            #     print("ゲームオーバーしてもリッキーはイケメン")
+            
 
         
         
     def draw(self):
         pyxel.cls(0)
         self.draw_grid()
-        pyxel.blt(self.head_x * 16, self.head_y * 16, 0, 0, 0, 16, 16, 0, rotate=self.kakudo)
-        # 画像を回転させたい場合：rotate 画像を拡大したい場合：scale の引数を追加できる
+        if self.game_over == False:
+            pyxel.blt(self.head_x * 16, self.head_y * 16, 0, 0, 0, 16, 16, 0, rotate=self.kakudo)
+        elif self.game_over == True:
+            pyxel.text(0, 0, "GAME OVER", 7)
+
     def draw_grid(self):
         grid_size = 16
         color = 13  # ピンク
