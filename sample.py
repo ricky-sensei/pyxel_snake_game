@@ -85,4 +85,16 @@ class App:
         for y in range(0, screen_height, grid_size):
             pyxel.line(0, y, screen_width, y, color)
 
+    def draw_grid(self):
+        grid_size = 16
+        color = 13  # ピンク
+
+        # 縦線
+        for x in range(0, screen_width, grid_size):
+            pyxel.line(x, 0, x, screen_height, color)
+
+        # 横線
+        for y in range(0, screen_height, grid_size):
+            pyxel.line(0, y, screen_width, y, color)
+
 App()
