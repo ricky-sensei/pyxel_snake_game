@@ -9,8 +9,7 @@ class App:
         # 変数を定義:selfをつける
         self.game_over = False
         self.kakudo = 90
-        self.head_x = 0
-        self.head_y = 0
+        # self.head_position[1] = 0
         self.item_pos_list = [[3,5],[2,5]]
         pyxel.init(screen_width, screen_hight)
         pyxel.load("my_resource.pyxres")
@@ -29,16 +28,16 @@ class App:
         # 10フレームごとに指定の方向に1マスすすむ
         if pyxel.frame_count % 10 == 0:  #->upgrade_snake()
             if self.kakudo == 90:
-                self.head_x += 1
+                self.head_position[0] += 1
             if self.kakudo == 270:
-                self.head_x -= 1
+                self.head_position[0] -= 1
             if self.kakudo == 0:
-                self.head_y -= 1
+                self.head_position[1] -= 1
             if self.kakudo == 180:
-                self.head_y += 1
+                self.head_position[1] += 1
             
             # 枠外に出たらゲームオーバー
-            if self.head_x >= 10 or self.head_x <= -1 or self.head_y >= 10 or self.head_y <= -1:
+            if self.head_position[0] >= 10 or self.head_position[0] <= -1 or self.head_position[1] >= 10 or self.head_position[1] <= -1:
                 self.game_over = True
             
             # if self.game_over == True:
