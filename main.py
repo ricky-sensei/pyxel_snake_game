@@ -6,44 +6,38 @@ screen_hight = 160
 
 class App:
     def __init__(self):
-        # 変数 v
+        # 変数を定義:selfをつける
         self.game_over = False
-        self.kakudo = 0
+        self.kakudo = 90
         self.head_x = 0
         self.head_y = 0
-        self.muki = "migi"
         self.item_pos_list = [[3,5],[2,5]]
         pyxel.init(screen_width, screen_hight)
         pyxel.load("my_resource.pyxres")
         pyxel.run(self.update, self.draw)
     def update(self):
+        # 方向キーが押されたときの処理:角度を変える
         if pyxel.btnp(pyxel.KEY_RIGHT):
             self.kakudo = 90
-            self.muki = "migi"
-            # self.head_x += 1
         elif pyxel.btnp(pyxel.KEY_DOWN):
             self.kakudo = 180
-            self.muki = "shita"
-            # self.head_y += 1
         elif pyxel.btnp(pyxel.KEY_LEFT):
             self.kakudo = 270
-            self.muki = "hidari"
-            # self.head_x -= 1
         elif pyxel.btnp(pyxel.KEY_UP):
             self.kakudo = 0
-            self.muki = "ue"
-            # self.head_y -= 1
 
-        if pyxel.frame_count % 10 == 0:
-            if self.muki == "migi":
+        # 10フレームごとに指定の方向に1マスすすむ
+        if pyxel.frame_count % 10 == 0:  #->upgrade_snake()
+            if self.kakudo == 90:
                 self.head_x += 1
-            if self.muki == "hidari":
+            if self.kakudo == 270:
                 self.head_x -= 1
-            if self. muki == "ue":
+            if self.kakudo == 0:
                 self.head_y -= 1
-            if self. muki == "shita":
+            if self.kakudo == 180:
                 self.head_y += 1
             
+            # 枠外に出たらゲームオーバー
             if self.head_x >= 10 or self.head_x <= -1 or self.head_y >= 10 or self.head_y <= -1:
                 self.game_over = True
             
@@ -56,15 +50,18 @@ class App:
     def draw(self):
         pyxel.cls(0)
         self.draw_grid()
+
+        # ゲームオーバーじゃなければキャラクターを表示
         if self.game_over == False:
             pyxel.blt(self.head_x * 16, self.head_y * 16, 0, 0, 0, 16, 16, 0, rotate=self.kakudo)
         elif self.game_over == True:
             pyxel.text(0, 0, "GAME OVER", 7)
         
+        # アイテムをランダムなところに表示
         pyxel.blt(self.item_pos_list[0][0]* 16, self.item_pos_list[0][1] * 16, 0, 16 * 3, 0, 16, 16, 0)
-        # 画像を回転させたい場合：rotate 画像を拡大したい場合：scale の引数を追加できる
-                    # 画像を回転させたい場合：rotate 画像を拡大したい場合：scale の引数を追加できる
 
+
+    # グリッド線を表示
     def draw_grid(self):
         grid_size = 16
         color = 13  # ピンク
@@ -77,4 +74,35 @@ class App:
         for y in range(0, 160, grid_size):
             pyxel.line(0, y, screen_width, y, color)
 
+    # def update_snake(self):
+    #     if self.kakudo == 90:
+    #         self.head_x += 1
+    #     if self.kakudo == 270:
+    #         self.head_x -= 1
+    #     if self.kakudo == 0:
+    #         self.head_y -= 1
+    #     if self.kakudo == 180:
+    #         self.head_y += 1
+
 App()
+
+
+"""
+リストの使い方
+
+頭のポジション:
+self.head_x, self.head_yと2つになっているのを、self.head_position[] にまとめる
+
+upgrade_snakeにまとめる
+
+snake_body リストを仮で作り、headについていくようにする
+
+
+アイテムにぶつかったとき
+[ ]尻尾をひとつ増やす
+    [ ]当たる前の体のリストの最後の要素を取り出す
+    [ ]移動したあとの体のリストを作成
+    [ ]最後の要素を移動したあとのリストに追加
+    [ ]体リストをみながら、体のパーツを表示
+
+"""
