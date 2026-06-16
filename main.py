@@ -9,7 +9,9 @@ class App:
         # 変数を定義:selfをつける
         self.game_over = False
         self.kakudo = 90
-        # self.head_position[1] = 0
+        self.head_position = [3, 3]
+        self.body_position = [[2, 3],[1, 3]]
+
         self.item_pos_list = [[3,5],[2,5]]
         pyxel.init(screen_width, screen_hight)
         pyxel.load("my_resource.pyxres")
@@ -29,6 +31,7 @@ class App:
         if pyxel.frame_count % 10 == 0:  #->upgrade_snake()
             if self.kakudo == 90:
                 self.head_position[0] += 1
+                # self.body_position[0] += 1
             if self.kakudo == 270:
                 self.head_position[0] -= 1
             if self.kakudo == 0:
@@ -52,7 +55,11 @@ class App:
 
         # ゲームオーバーじゃなければキャラクターを表示
         if self.game_over == False:
-            pyxel.blt(self.head_x * 16, self.head_y * 16, 0, 0, 0, 16, 16, 0, rotate=self.kakudo)
+            pyxel.blt(self.head_position[0] * 16, self.head_position[1] * 16, 0, 0, 0, 16, 16, 0, rotate=self.kakudo)
+            for i in self.body_position:
+                pyxel.blt(i[0] * 16, i[1] * 16, 0, 16, 0, 16, 16, 0, rotate=self.kakudo)
+
+        
         elif self.game_over == True:
             pyxel.text(0, 0, "GAME OVER", 7)
         
