@@ -12,7 +12,7 @@ class App:
         self.head_position = [3, 3]
         self.body_position = [[2, 3],[1, 3]]
 
-        self.item_pos_list = [[3,5],[2,5]]
+        self.item_pos_list = [[randint(0, 9),randint(0,9)]]
         pyxel.init(screen_width, screen_hight)
         pyxel.load("my_resource.pyxres")
         pyxel.run(self.update, self.draw)
@@ -42,6 +42,17 @@ class App:
             # 枠外に出たらゲームオーバー
             if self.head_position[0] >= 10 or self.head_position[0] <= -1 or self.head_position[1] >= 10 or self.head_position[1] <= -1:
                 self.game_over = True
+            
+            if self.head_position == self.item_pos_list[0]:
+                self.new_item_pos = [randint(0, 9), randint(0, 9)]
+
+                while self.new_item_pos == self.item_pos_list[0]:
+                    self.new_item_pos = [randint(0, 9), randint(0, 9)]
+                
+                self. item_pos_list[0] = self.new_item_pos
+
+
+
             
             # if self.game_over == True:
             #     print("ゲームオーバーしてもリッキーはイケメン")
