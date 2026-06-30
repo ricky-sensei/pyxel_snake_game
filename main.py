@@ -50,6 +50,9 @@ class App:
                     self.new_item_pos = [randint(0, 9), randint(0, 9)]
                 
                 self. item_pos_list[0] = self.new_item_pos
+            
+            self.body_position[0][0] += 1
+            self.body_position[1][0] += 1
 
 
 
