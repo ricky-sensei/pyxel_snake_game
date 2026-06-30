@@ -51,8 +51,11 @@ class App:
                 
                 self. item_pos_list[0] = self.new_item_pos
             
-            self.body_position[0][0] += 1
-            self.body_position[1][0] += 1
+            # self.body_position[0][0] += 1
+            # self.body_position[1][0] += 1
+            # for i in range(len(self.body_position):
+            #     self.body_position[i][0] += 1
+                
 
 
 
