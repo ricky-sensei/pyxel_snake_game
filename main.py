@@ -94,7 +94,7 @@ class App:
             pyxel.line(x, 0, x, 160, color)
 
         # 横線
-        for y in range(0, 160, grid_size):
+        for y in range(0, 160, grid_size): 
             pyxel.line(0, y, screen_width, y, color)
 
     # def update_snake(self):
