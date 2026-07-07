@@ -10,9 +10,9 @@ class App:
         self.game_over = False
         self.kakudo = 90
         self.head_position = [3, 3]
-        self.body_position = [[2, 3],[1, 3]]
+        self.body_position = [[1, 3],[2, 3]]
 
-        self.item_pos_list = [[randint(0, 9),randint(0,9)]]
+        self.item_pos_list = [[5,1], [2, 8]]
         pyxel.init(screen_width, screen_hight)
         pyxel.load("my_resource.pyxres")
         pyxel.run(self.update, self.draw)
@@ -29,6 +29,8 @@ class App:
 
         # 10フレームごとに指定の方向に1マスすすむ
         if pyxel.frame_count % 10 == 0:  #->upgrade_snake()
+            self.old_head_position = [self.head_position[0], self.head_position[1]]
+
             if self.kakudo == 90:
                 self.head_position[0] += 1
                 # self.body_position[0] += 1
@@ -38,6 +40,9 @@ class App:
                 self.head_position[1] -= 1
             if self.kakudo == 180:
                 self.head_position[1] += 1
+
+            self.body_position.append(self.old_head_position)
+            
             
             # 枠外に出たらゲームオーバー
             if self.head_position[0] >= 10 or self.head_position[0] <= -1 or self.head_position[1] >= 10 or self.head_position[1] <= -1:
@@ -50,6 +55,9 @@ class App:
                     self.new_item_pos = [randint(0, 9), randint(0, 9)]
                 
                 self. item_pos_list[0] = self.new_item_pos
+            else:
+                del self.body_position[0]
+                
             
             # self.body_position[0][0] += 1
             # self.body_position[1][0] += 1
@@ -81,7 +89,8 @@ class App:
             pyxel.text(0, 0, "GAME OVER", 7)
         
         # アイテムをランダムなところに表示
-        pyxel.blt(self.item_pos_list[0][0]* 16, self.item_pos_list[0][1] * 16, 0, 16 * 3, 0, 16, 16, 0)
+        for i in self.item_pos_list:
+            pyxel.blt(i[0]* 16, i[1] * 16, 0, 16 * 3, 0, 16, 16, 0)
 
 
     # グリッド線を表示
