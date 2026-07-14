@@ -12,13 +12,12 @@ class App:
         self.game_over = False
         self.kakudo = 90
         self.head_position = [3, 3]
-
-        # main.pyからの変更点:
-        # appendしたあとに0番を消すため、体は「しっぽ → 頭に近い体」の順番にする
-        # main.pyでは [[2, 3], [1, 3]] だったが、ここでは [[1, 3], [2, 3]] にする
         self.body_position = [[1, 3], [2, 3]]
 
-        self.item_pos_list = [[randint(0, 9), randint(0, 9)]]
+        # ーーーーーー変更ーーーーーーー
+        # sample.pyと同じように、アイテムを3個配置する
+        self.item_pos_list = [[5, 5], [8, 6], [2, 7]]
+
         pyxel.init(screen_width, screen_hight)
         pyxel.load("my_resource.pyxres")
         pyxel.run(self.update, self.draw)
@@ -36,10 +35,8 @@ class App:
 
         # 10フレームごとに指定の方向に1マスすすむ
         if pyxel.frame_count % 10 == 0:
-            # main.pyからの変更点:
-            # 頭を動かす前に、今の頭の場所を保存しておく
-            # この場所が、次の体の最後の要素になる
-            old_head_position = [self.head_position[0], self.head_position[1]]
+            # 頭を動かす前の場所を保存する
+            self.old_head_position = [self.head_position[0], self.head_position[1]]
 
             if self.kakudo == 90:
                 self.head_position[0] += 1
@@ -50,41 +47,72 @@ class App:
             if self.kakudo == 180:
                 self.head_position[1] += 1
 
-            # main.pyからの変更点:
-            # 頭があった場所を体リストの最後に追加する
-            self.body_position.append(old_head_position)
+            # 頭があった場所を、頭に一番近い体として追加する
+            self.body_position.append(self.old_head_position)
 
-            # main.pyからの変更点:
-            # 0番の要素、つまり一番古いしっぽを削除する
-            del self.body_position[0]
-
-            # 枠外に出たらゲームオーバー
-            if self.head_position[0] >= 10 or self.head_position[0] <= -1 or self.head_position[1] >= 10 or self.head_position[1] <= -1:
+            # ーーーーーー変更ーーーーーーー
+            # 枠外だけでなく、自分の体にぶつかったときもゲームオーバーにする
+            if (
+                self.head_position in self.body_position
+                or self.head_position[0] >= 10
+                or self.head_position[0] <= -1
+                or self.head_position[1] >= 10
+                or self.head_position[1] <= -1
+            ):
                 self.game_over = True
 
-            if self.head_position == self.item_pos_list[0]:
+            # ーーーーーー変更ーーーーーーー
+            # 0番だけではなく、3個のうちどのアイテムでも取れるようにする
+            if self.head_position in self.item_pos_list:
+                get_item_number = self.item_pos_list.index(self.head_position)
                 self.new_item_pos = [randint(0, 9), randint(0, 9)]
 
-                while self.new_item_pos == self.item_pos_list[0]:
+                # ーーーーーー変更ーーーーーーー
+                # 新しいアイテムが、他のアイテムやヘビと重ならないようにする
+                while (
+                    self.new_item_pos in self.item_pos_list
+                    or self.new_item_pos == self.head_position
+                    or self.new_item_pos in self.body_position
+                ):
                     self.new_item_pos = [randint(0, 9), randint(0, 9)]
 
-                self.item_pos_list[0] = self.new_item_pos
+                self.item_pos_list[get_item_number] = self.new_item_pos
+
+                # アイテムを取ったときは、しっぽを消さずに体を1個伸ばす
+            else:
+                # アイテムを取っていないときは、一番古いしっぽを消す
+                del self.body_position[0]
 
     def draw(self):
         pyxel.cls(0)
         self.draw_grid()
 
-        # ゲームオーバーじゃなければキャラクターを表示
+        # ゲームオーバーじゃなければキャラクターとアイテムを表示
         if self.game_over == False:
-            pyxel.blt(self.head_position[0] * 16, self.head_position[1] * 16, 0, 0, 0, 16, 16, 0, rotate=self.kakudo)
+            pyxel.blt(
+                self.head_position[0] * 16,
+                self.head_position[1] * 16,
+                0,
+                0,
+                0,
+                16,
+                16,
+                0,
+                rotate=self.kakudo,
+            )
+
+            # ーーーーーー変更ーーーーーーー
+            # sample.pyに合わせて、体の画像は回転させずに表示する
             for i in self.body_position:
-                pyxel.blt(i[0] * 16, i[1] * 16, 0, 16, 0, 16, 16, 0, rotate=self.kakudo)
+                pyxel.blt(i[0] * 16, i[1] * 16, 0, 16, 0, 16, 16, 0)
+
+            # ーーーーーー変更ーーーーーーー
+            # すべてのアイテムをプレイ中だけ表示する
+            for i in self.item_pos_list:
+                pyxel.blt(i[0] * 16, i[1] * 16, 0, 32, 0, 16, 16, 0)
 
         elif self.game_over == True:
             pyxel.text(0, 0, "GAME OVER", 7)
-
-        # アイテムをランダムなところに表示
-        pyxel.blt(self.item_pos_list[0][0] * 16, self.item_pos_list[0][1] * 16, 0, 16 * 3, 0, 16, 16, 0)
 
     # グリッド線を表示
     def draw_grid(self):
